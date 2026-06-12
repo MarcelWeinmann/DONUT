@@ -169,8 +169,8 @@ class DonutLayer(nn.Module):
             xs['pos'] = torch.cumsum(xs['pos'], dim=3)
             xs['head'] = torch.cumsum(0.3*torch.tanh(xs['head']), dim=3)
 
-        xs['scale'] = 1 + elu(xs['scale'])
-        xs['conc'] = 1 + elu(xs['conc'])
+        xs['scale'] = (1 + elu(xs['scale'])).clamp(min=1e-4)
+        xs['conc'] = (1 + elu(xs['conc'])).clamp(min=1e-4)
 
         xs['pos'], xs['head'] = local_to_global(
             xs['pos'], xs['head'], tok_pos_m, tok_head_m)
