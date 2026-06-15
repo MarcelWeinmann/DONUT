@@ -38,6 +38,8 @@ class ArgoverseV2DataModule(pl.LightningDataModule):
                  train_transform: Optional[Callable] = None,
                  val_transform: Optional[Callable] = None,
                  test_transform: Optional[Callable] = None,
+                 use_raceline: bool = True,
+                 use_raceline_velocity: bool = False,
                  t_hist: int = 50,
                  t_pred: int = 60,
                  **kwargs) -> None:
@@ -59,28 +61,36 @@ class ArgoverseV2DataModule(pl.LightningDataModule):
         self.test_transform = test_transform
         self.num_historical_steps = t_hist
         self.num_future_steps = t_pred
+        self.use_raceline = use_raceline
+        self.use_raceline_velocity = use_raceline_velocity
 
     def prepare_data(self) -> None:
         ArgoverseV2Dataset(self.data_root, 'train', self.train_raw_dir,
                            self.train_processed_dir, self.train_transform,
-                           num_historical_steps=self.num_historical_steps, num_future_steps=self.num_future_steps)
+                           num_historical_steps=self.num_historical_steps, num_future_steps=self.num_future_steps,
+                           use_raceline=self.use_raceline, use_raceline_velocity=self.use_raceline_velocity)
         ArgoverseV2Dataset(self.data_root, 'val', self.val_raw_dir,
                            self.val_processed_dir, self.val_transform,
-                           num_historical_steps=self.num_historical_steps, num_future_steps=self.num_future_steps)
+                           num_historical_steps=self.num_historical_steps, num_future_steps=self.num_future_steps,
+                           use_raceline=self.use_raceline, use_raceline_velocity=self.use_raceline_velocity)
         ArgoverseV2Dataset(self.data_root, 'test', self.test_raw_dir,
                            self.test_processed_dir, self.test_transform,
-                           num_historical_steps=self.num_historical_steps, num_future_steps=self.num_future_steps)
+                           num_historical_steps=self.num_historical_steps, num_future_steps=self.num_future_steps,
+                           use_raceline=self.use_raceline, use_raceline_velocity=self.use_raceline_velocity)
 
     def setup(self, stage: Optional[str] = None) -> None:
         self.train_dataset = ArgoverseV2Dataset(self.data_root, 'train', self.train_raw_dir, self.train_processed_dir,
                                                 self.train_transform, num_historical_steps=self.num_historical_steps,
-                                                num_future_steps=self.num_future_steps)
+                                                num_future_steps=self.num_future_steps, use_raceline=self.use_raceline,
+                                                use_raceline_velocity=self.use_raceline_velocity)
         self.val_dataset = ArgoverseV2Dataset(self.data_root, 'val', self.val_raw_dir, self.val_processed_dir,
                                               self.val_transform, num_historical_steps=self.num_historical_steps,
-                                              num_future_steps=self.num_future_steps)
+                                              num_future_steps=self.num_future_steps, use_raceline=self.use_raceline,
+                                              use_raceline_velocity=self.use_raceline_velocity)
         self.test_dataset = ArgoverseV2Dataset(self.data_root, 'test', self.test_raw_dir, self.test_processed_dir,
                                                self.test_transform, num_historical_steps=self.num_historical_steps,
-                                               num_future_steps=self.num_future_steps)
+                                               num_future_steps=self.num_future_steps, use_raceline=self.use_raceline,
+                                               use_raceline_velocity=self.use_raceline_velocity)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=self.shuffle,

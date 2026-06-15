@@ -27,6 +27,8 @@ def load_args():
     parser.add_argument('--ckpt_root', type=str, default='ckpts')
     parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--num_workers', type=int, default=15)
+    parser.add_argument('--use_raceline', action='store_true')
+    parser.add_argument('--use_raceline_velocity', action='store_true')
     Donut.add_model_specific_args(parser)
     args = parser.parse_args()
     return args

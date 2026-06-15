@@ -34,6 +34,8 @@ def load_args():
     parser.add_argument('--devices', type=int, default=1)
     parser.add_argument('--nodes', type=int, default=1)
     parser.add_argument('--max_epochs', type=int, default=60)
+    parser.add_argument('--use_raceline', action='store_true')
+    parser.add_argument('--use_raceline_velocity', action='store_true')
     Donut.add_model_specific_args(parser)
     args = parser.parse_args()
     return args
